@@ -1,4 +1,4 @@
-#version 400 core
+#version 450 core
 
 uniform vec2 resolution;
 uniform vec2 mouse;
