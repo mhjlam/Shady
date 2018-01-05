@@ -2,9 +2,6 @@
 
 class Mesh
 {
-private:
-	
-
 public:
 	Mesh();
 };

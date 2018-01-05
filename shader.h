@@ -1,40 +1,45 @@
 #pragma once
 
 #include <string>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-class Shader
+class Base_Shader
 {
 protected:
 	GLuint shader;
 
 public:
-	virtual ~Shader() = 0;
-	operator GLuint() { return shader; }
+	virtual operator GLuint()
+	{
+		return shader;
+	}
 };
 
-class VertexShader : public Shader
+class Vertex_Shader : public Base_Shader
 {
 public:
-	VertexShader(const std::string& filename);
-	~VertexShader() {};
+	Vertex_Shader(const std::string& vs_file);
 };
 
-class FragmentShader : public Shader
+class Fragment_Shader : public Base_Shader
 {
 public:
-	FragmentShader(const std::string& filename);
-	~FragmentShader() {};
+	Fragment_Shader(const std::string& fs_file);
 };
 
-class ShaderProgram
+class Shader
 {
 private:
 	GLuint program;
 
 public:
-	ShaderProgram(VertexShader& vs, FragmentShader& fs);
-	ShaderProgram(const std::string& vsfile, const std::string& fsfile);
-	operator GLuint() { return program; }
+	Shader(Vertex_Shader& vs, Fragment_Shader& fs);
+	Shader(const std::string& vs_file, const std::string& fs_file);
+
+	operator GLuint()
+	{
+		return program;
+	}
 };

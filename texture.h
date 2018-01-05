@@ -1,10 +1,18 @@
 #pragma once
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 class Texture
 {
 private:
-	GLuint ref;
+	GLuint texture;
 
 public:
-	Texture();	
+	Texture();
+
+	operator GLuint()
+	{
+		return texture;
+	}
 };
