@@ -39,3 +39,5 @@ Thumbs.db
 # Manual additions #
 ####################
 .gitconfig
+.bash_history
+bin/shaders/*
