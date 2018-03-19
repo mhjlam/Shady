@@ -41,3 +41,4 @@ Thumbs.db
 .gitconfig
 .bash_history
 bin/shaders/*
+**.h.gch
