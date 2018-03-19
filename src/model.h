@@ -22,10 +22,10 @@ private:
     // std::shared_ptr<Texture> texture;
 
 public:
-    GLenum topology;        // GL_POINTS, 
-                            // GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES, 
-                            // GL_LINE_STRIP_ADJACENCY, GL_LINES_ADJACENCY, 
-                            // GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES, 
+    GLenum topology;        // GL_POINTS,
+                            // GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES,
+                            // GL_LINE_STRIP_ADJACENCY, GL_LINES_ADJACENCY,
+                            // GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES,
                             // GL_TRIANGLE_STRIP_ADJACENCY, GL_TRIANGLES_ADJACENCY,
                             // GL_PATCHES
     GLenum index_type;      // UNSIGNED_BYTE, GL_UNSIGNED_SHORT, GL_UNSIGNED_INT
