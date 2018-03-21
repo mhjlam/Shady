@@ -17,7 +17,7 @@ Model::Model(std::vector<GLfloat> vertices, int index_count, GLuint shader_progr
     glBindVertexArray(0);
 }
 
-Model::Model(std::vector<GLfloat> vertices, std::vector<GLuint> indices, GLuint shader_program, GLenum mode, GLenum type) : 
+Model::Model(std::vector<GLfloat> vertices, std::vector<GLuint> indices, GLuint shader_program, GLenum mode, GLenum type) :
     topology(mode), index_count(indices.size()), index_type(type)
 {
     glGenVertexArrays(1, &vao);
@@ -32,7 +32,7 @@ Model::Model(std::vector<GLfloat> vertices, std::vector<GLuint> indices, GLuint 
     glGenBuffers(1, &index_buffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices.front(), GL_STATIC_DRAW);
-    
+
     // TODO: vertex attributes should be set based on description of input vertex array
 
     GLint position_attrib = glGetAttribLocation(shader_program, "position");
@@ -48,9 +48,4 @@ Model::Model(std::vector<GLfloat> vertices, std::vector<GLuint> indices, GLuint 
     glVertexAttribPointer(texcoord_attrib, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (void*)(5 * sizeof(GLfloat)));
 
     glBindVertexArray(0);
-}
-
-Model::Model(std::shared_ptr<Mesh> mesh, GLuint shader_program)
-{
-
 }

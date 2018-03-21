@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tuple>
 #include <vector>
 #include <memory>
 
@@ -17,9 +18,9 @@ friend class Renderer;
 private:
     GLuint vao;
 
-    // std::shared_ptr<Mesh> mesh;
-    // std::shared_ptr<Shader> shader;
-    // std::shared_ptr<Texture> texture;
+    std::shared_ptr<Mesh> mesh;
+    std::shared_ptr<Shader> shader;
+    std::shared_ptr<Texture> texture;
 
 public:
     GLenum topology;        // GL_POINTS,
@@ -34,7 +35,15 @@ public:
 public:
     Model(std::vector<GLfloat> vertices, int index_count, GLuint shader_program, GLenum mode = GL_TRIANGLES, GLenum type = GL_UNSIGNED_INT);
     Model(std::vector<GLfloat> vertices, std::vector<GLuint> indices, GLuint shader_program, GLenum mode = GL_TRIANGLES, GLenum type = GL_UNSIGNED_INT);
-    Model(std::shared_ptr<Mesh> mesh, GLuint shader_program); // TODO: accept model that knows about vertex attributes (type, size, offsets) and textures, etc
+
+    // Model consisting of one mesh and one shader
+    Model(std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader);
+
+    // Model consisting of multiple meshes and one shader
+    Model(std::vector<std::shared_ptr<Mesh>> meshes, GLuint shader_program);
+
+    // Model consisting of multiple bodies (mesh/shader/texture tuples)
+    Model(std::vector<std::tuple<std::shared_ptr<Mesh>, std::shared_ptr<Shader>, std::shared_ptr<Texture>>> bodies);
 
     operator GLuint()
     {

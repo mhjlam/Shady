@@ -10,7 +10,8 @@ namespace fs = std::experimental::filesystem;
 
 Mesh::Mesh()
 {
-
+	vertices = std::vector<Vertex>();
+	indices = std::vector<GLuint>();
 }
 
 std::shared_ptr<Mesh> load_obj(const std::string& obj_file_path)
@@ -24,7 +25,7 @@ std::shared_ptr<Mesh> load_obj(const std::string& obj_file_path)
 std::shared_ptr<Mesh> load_fbx(const std::string& fbx_file_path)
 {
 	if (!fs::exists(fbx_file_path)) return nullptr;
-	
+
 	std::ifstream file(fbx_file_path, std::ios::in);
 	if (!file.is_open()) return nullptr;
 }

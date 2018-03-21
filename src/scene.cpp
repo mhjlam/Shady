@@ -39,7 +39,6 @@ void Scene::render()
 }
 
 
-
 Scene_Random_Color::Scene_Random_Color() : Scene()
 {
     timer = 0;
@@ -68,10 +67,8 @@ void Scene_Random_Color::update(GLFWwindow* window)
 void Scene_Random_Color::render()
 {
     Scene::render();
-
     glClear(GL_COLOR_BUFFER_BIT);
 }
-
 
 
 Scene_Cursor_Color::Scene_Cursor_Color() : Scene()
@@ -116,7 +113,6 @@ void Scene_Cursor_Color::render()
     glBindVertexArray(0);
     glUseProgram(0);
 }
-
 
 
 Scene_Quadrilateral::Scene_Quadrilateral() : Scene()
