@@ -1,12 +1,13 @@
+#include <string>
 #include <memory>
 #include <sstream>
 #include <iostream>
-#include <exception>
+#include <stdexcept>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "scene_manager.h"
+#include "renderer.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -30,41 +31,41 @@ int main(int argc, char* argv[])
             throw std::runtime_error("Window creation failed.");
         }
 
-        Scene_Manager scene_manager;
-
         glfwMakeContextCurrent(window);
-        glfwSetWindowUserPointer(window, &scene_manager);
+        gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+
+        Renderer renderer(window);
+        glfwSetWindowUserPointer(window, &renderer);
 
         auto key_callback = [](GLFWwindow* window, int key, int scancode, int action, int mods)
         {
-            Scene_Manager* sm = (Scene_Manager*)(glfwGetWindowUserPointer(window));
-            if (sm) sm->key_callback(window, key, scancode, action, mods);
+            Renderer* r = (Renderer*)(glfwGetWindowUserPointer(window));
+            if (r) r->key_callback(window, key, scancode, action, mods);
         };
 
         auto cursor_pos_callback = [](GLFWwindow* window, double x, double y)
         {
-            Scene_Manager* sm = (Scene_Manager*)(glfwGetWindowUserPointer(window));
-            if (sm) sm->cursor_pos_callback(window, x, y);
+            Renderer* r = (Renderer*)(glfwGetWindowUserPointer(window));
+            if (r) r->cursor_pos_callback(window, x, y);
         };
 
         auto mouse_button_callback = [](GLFWwindow* window, int button, int action, int mods)
         {
-            Scene_Manager* sm = (Scene_Manager*)(glfwGetWindowUserPointer(window));
-            if (sm) sm->mouse_button_callback(window, button, action, mods);
+            Renderer* r = (Renderer*)(glfwGetWindowUserPointer(window));
+            if (r) r->mouse_button_callback(window, button, action, mods);
         };
 
         glfwSetKeyCallback(window, key_callback);
         glfwSetCursorPosCallback(window, cursor_pos_callback);
         glfwSetMouseButtonCallback(window, mouse_button_callback);
 
-        gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         glfwSwapInterval(1);
 
         while (!glfwWindowShouldClose(window))
         {
-            glfwPollEvents();
-            scene_manager.frame(window);
-            glfwSwapBuffers(window);
+            glfwPollEvents();         
+            renderer.update();
+            renderer.render();
         }
 
         glfwDestroyWindow(window);

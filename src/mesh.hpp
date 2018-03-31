@@ -6,7 +6,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "vertex.h"
+#include "vertex.hpp"
 
 class Model;
 class Renderer;

@@ -1,31 +1,11 @@
-#include "shader.h"
+#include "shader.hpp"
 
-#include <fstream>
-#include <sstream>
-#include <iostream>
-
-const std::string file_as_string(const std::string& filename)
-{
-    std::ifstream file(filename);
-
-    if (!file.good())
-    {
-        std::stringstream ss;
-        ss << "Cannot open or read file \"" << filename << "\"" << std::endl;
-        throw std::runtime_error(ss.str());
-    }
-
-    file.seekg(0, std::ios::end);
-    std::size_t size = file.tellg();
-    std::string buffer(size, ' ');
-    file.seekg(0);
-    file.read(&buffer[0], size);
-    return buffer;
-}
+#include "fmt/format.h"
+#include "util.hpp"
 
 Vertex_Shader::Vertex_Shader(const std::string& vs_file)
 {
-    std::string contents = file_as_string(vs_file);
+    std::string contents = util::file_as_string(vs_file);
     const char* c_contents = contents.c_str();
 
     shader = glCreateShader(GL_VERTEX_SHADER);
@@ -37,23 +17,20 @@ Vertex_Shader::Vertex_Shader(const std::string& vs_file)
 
     if (shader_status == GL_FALSE)
     {
-        GLint len;
-        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
+        GLint info_log_len;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &info_log_len);
 
-        char* log = new char[len];
-        glGetShaderInfoLog(shader, len, NULL, log);
+        std::string info_log_str;
+        glGetShaderInfoLog(shader, info_log_len, nullptr, &info_log_str[0]);
 
-        std::stringstream ss;
-        ss << "Vertex shader compilation error in \"" << vs_file << "\":" << log << std::endl;
-        delete[] log;
-
-        throw std::runtime_error(ss.str());
+        std::string msg = fmt::format("Vertex shader compilation error in \"{}\": {}", vs_file, info_log_str);
+        throw std::runtime_error(msg.c_str());
     }
 }
 
 Fragment_Shader::Fragment_Shader(const std::string& fs_file)
 {
-    std::string contents = file_as_string(fs_file);
+    std::string contents = util::file_as_string(fs_file);
     const char* c_contents = contents.c_str();
 
     shader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -65,17 +42,14 @@ Fragment_Shader::Fragment_Shader(const std::string& fs_file)
 
     if (shader_status == GL_FALSE)
     {
-        GLint len;
-        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
+        GLint info_log_len;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &info_log_len);
 
-        char* log = new char[len];
-        glGetShaderInfoLog(shader, len, NULL, log);
+        std::string info_log_str;
+        glGetShaderInfoLog(shader, info_log_len, nullptr, &info_log_str[0]);
 
-        std::stringstream ss;
-        ss << "Fragment shader compilation error in \"" << fs_file << "\":" << log << std::endl;
-        delete[] log;
-
-        throw std::runtime_error(ss.str());
+        std::string msg = fmt::format("Fragment shader compilation error in \"{}\": {}", fs_file, info_log_str);
+        throw std::runtime_error(msg.c_str());
     }
 }
 
@@ -93,17 +67,14 @@ Shader::Shader(Vertex_Shader& vs, Fragment_Shader& fs)
 
     if (!success)
     {
-        GLint len;
-        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
+        GLint info_log_len;
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &info_log_len);
 
-        char* log = new char[len];
-        glGetShaderInfoLog(program, len, nullptr, log);
+        std::string info_log_str;
+        glGetShaderInfoLog(program, info_log_len, nullptr, &info_log_str[0]);
 
-        std::stringstream ss;
-        ss << "Shader program linker error: " << log << std::endl;
-        delete[] log;
-
-        throw std::runtime_error(ss.str());
+        std::string msg = fmt::format("Shader program linker error: {}", info_log_str);
+        throw std::runtime_error(msg.c_str());
     }
 
     glDetachShader(program, vs);
@@ -131,11 +102,10 @@ Shader::Shader(const std::string& vs_file, const std::string& fs_file)
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &info_log_len);
 
         std::string info_log_str;
-        glGetProgramInfoLog(program, info_log_len, NULL, &info_log_str[0]);
+        glGetProgramInfoLog(program, info_log_len, nullptr, &info_log_str[0]);
 
-        std::stringstream ss;
-        ss << "Shader program linker failure:" << info_log_str << std::endl;
-        throw std::runtime_error(ss.str());
+        std::string msg = fmt::format("Shader program linker failure: {}", info_log_str);
+        throw std::runtime_error(info_log_str.c_str());
     }
 
     glDetachShader(program, vs);

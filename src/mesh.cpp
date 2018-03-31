@@ -1,7 +1,7 @@
-#include "mesh.h"
+#include "mesh.hpp"
 
 #define TINYOBJLOADER_IMPLEMENTATION
-#include <tiny_obj_loader.h>
+#include "tiny_obj_loader.h"
 
 #include <fstream>
 #include <experimental/filesystem>
@@ -12,6 +12,16 @@ Mesh::Mesh()
 {
 	vertices = std::vector<Vertex>();
 	indices = std::vector<GLuint>();
+}
+
+Mesh::Mesh(const std::vector<Vertex>& vertices, GLenum mode, GLenum type)
+{
+
+}
+
+Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, GLenum mode, GLenum type)
+{
+
 }
 
 std::shared_ptr<Mesh> load_obj(const std::string& obj_file_path)

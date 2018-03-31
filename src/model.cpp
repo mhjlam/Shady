@@ -1,4 +1,4 @@
-#include "model.h"
+#include "model.hpp"
 
 Model::Model(std::vector<GLfloat> vertices, int index_count, GLuint shader_program, GLenum mode, GLenum type) :
     topology(mode), index_count(index_count), index_type(type)
