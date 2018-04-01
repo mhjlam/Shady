@@ -46,12 +46,12 @@ Scene_Cursor_Color::Scene_Cursor_Color() : Scene()
 {
     std::vector<GLfloat> vertices =
     {
-        // top-left
+        // top-left position
         -1.0f,  1.0f, 0.0f, 1.0f,
          1.0f,  1.0f, 0.0f, 1.0f,
         -1.0f, -1.0f, 0.0f, 1.0f,
 
-        // bottom-right
+        // bottom-right position
          1.0f,  1.0f, 0.0f, 1.0f,
          1.0f, -1.0f, 0.0f, 1.0f,
         -1.0f, -1.0f, 0.0f, 1.0f
@@ -59,6 +59,9 @@ Scene_Cursor_Color::Scene_Cursor_Color() : Scene()
 
     shader = std::make_shared<Shader>("shaders/scene_cursor_color.vs.glsl", "shaders/scene_cursor_color.fs.glsl");
     model = std::make_shared<Model>(vertices, vertices.size() / 4, *shader);
+
+    uniloc_mouse = glGetUniformLocation(*shader, "mouse");
+    uniloc_resolution = glGetUniformLocation(*shader, "resolution");
 }
 
 void Scene_Cursor_Color::update(Renderer* renderer)
@@ -75,8 +78,8 @@ void Scene_Cursor_Color::render()
     glUseProgram(*shader);
     glBindVertexArray(*model);
 
-    glUniform2f(glGetUniformLocation(*shader, "mouse"), float(mouse_x), float(mouse_y));
-    glUniform2f(glGetUniformLocation(*shader, "resolution"), float(width), float(height));
+    glUniform2f(uniloc_mouse, float(mouse_x), float(mouse_y));
+    glUniform2f(uniloc_resolution, float(width), float(height));
 
     glDrawArrays(model->topology, 0, model->index_count);
 
@@ -106,6 +109,10 @@ Scene_Quadrilateral::Scene_Quadrilateral() : Scene()
 
     shader = std::make_shared<Shader>("shaders/scene_quadrilateral.vs.glsl", "shaders/scene_quadrilateral.fs.glsl");
     model = std::make_shared<Model>(vertices, indices, *shader);
+
+    uniloc_model = glGetUniformLocation(*shader, "model");
+    uniloc_view = glGetUniformLocation(*shader, "view");
+    uniloc_projection = glGetUniformLocation(*shader, "projection");
 }
 
 void Scene_Quadrilateral::update(Renderer* renderer)
@@ -123,16 +130,13 @@ void Scene_Quadrilateral::render()
     glBindVertexArray(*model);
 
     glm::mat4 mat_model = glm::scale(glm::rotate(glm::mat4(1.0f), -angle, glm::vec3(0.0f, 0.0f, 1.0f)), glm::vec3(scale));
-    GLint uniform_model = glGetUniformLocation(*shader, "model");
-    glUniformMatrix4fv(uniform_model, 1, GL_FALSE, glm::value_ptr(mat_model));
+    glUniformMatrix4fv(uniloc_model, 1, GL_FALSE, glm::value_ptr(mat_model));
 
     glm::mat4 mat_view = glm::lookAt(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    GLint uniform_view = glGetUniformLocation(*shader, "view");
-    glUniformMatrix4fv(uniform_view, 1, GL_FALSE, glm::value_ptr(mat_view));
+    glUniformMatrix4fv(uniloc_view, 1, GL_FALSE, glm::value_ptr(mat_view));
 
     glm::mat4 mat_projection = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 10.0f);
-    GLint uniform_projection = glGetUniformLocation(*shader, "projection");
-    glUniformMatrix4fv(uniform_projection, 1, GL_FALSE, glm::value_ptr(mat_projection));
+    glUniformMatrix4fv(uniloc_projection, 1, GL_FALSE, glm::value_ptr(mat_projection));
 
     glDrawElements(model->topology, model->index_count, model->index_type, 0);
 

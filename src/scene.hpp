@@ -2,6 +2,9 @@
 
 #include <memory>
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 class Model;
 class Shader;
 class Renderer;
@@ -39,6 +42,10 @@ class Scene_Cursor_Color : public Scene
 private:
     int width, height;
     double mouse_x, mouse_y;
+
+    GLint uniloc_mouse;
+    GLint uniloc_resolution;
+
     std::shared_ptr<Model> model;
     std::shared_ptr<Shader> shader;
 
@@ -53,6 +60,11 @@ class Scene_Quadrilateral : public Scene
 private:
     float scale, angle;
     float aspect_ratio;
+
+    GLint uniloc_model;
+    GLint uniloc_view;
+    GLint uniloc_projection;
+
     std::shared_ptr<Model> model;
     std::shared_ptr<Shader> shader;
 

@@ -1,6 +1,6 @@
 #include "shader.hpp"
 
-#include "fmt/format.h"
+#include <fmt/format.h>
 #include "util.hpp"
 
 Vertex_Shader::Vertex_Shader(const std::string& vs_file)
