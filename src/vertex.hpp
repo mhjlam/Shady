@@ -21,7 +21,12 @@ struct Vertex_Attrib
 
 struct Vertex
 {
-    Vertex_Attrib* attribs;
+    Vertex_Attrib* attribs = nullptr;
+
+    virtual ~Vertex()
+    {
+        delete[] attribs;
+    }
 };
 
 // 2D
@@ -42,23 +47,11 @@ struct Vertex2_Position : public Vertex
         attribs[0].offset = 0;
     }
 
-    Vertex2_Position(GLfloat position[2], GLuint shader_program, const char* position_name = "vs_position")
+    Vertex2_Position(GLfloat position[2], 
+                     GLuint shader_program, 
+                     const char* position_name = "vs_position") : Vertex2_Position(position)
     {
-        attribs = new Vertex_Attrib[1];
-
-        // position
-        attribs[0].data = position;
         attribs[0].index = glGetAttribLocation(shader_program, position_name);
-        attribs[0].size = 2;
-        attribs[0].type = GL_FLOAT;
-        attribs[0].normalized = GL_FALSE;
-        attribs[0].stride = 2 * sizeof(GLfloat);
-        attribs[0].offset = 0;
-    }
-
-    ~Vertex2_Position()
-    {
-        delete[] attribs;
     }
 };
 
@@ -87,30 +80,12 @@ struct Vertex2_Position_Color : public Vertex
     }
 
     Vertex2_Position_Color(GLfloat position[2], GLfloat color[3], 
-        GLuint shader_program, const char* position_name = "vs_position", const char* color_name = "vs_color")
+                           GLuint shader_program, 
+                           const char* position_name = "vs_position", 
+                           const char* color_name = "vs_color") : Vertex2_Position_Color(position, color)
     {
-        attribs = new Vertex_Attrib[2];
-
-        attribs[0].data = position;
         attribs[0].index = glGetAttribLocation(shader_program, position_name);
-        attribs[0].size = 2;
-        attribs[0].type = GL_FLOAT;
-        attribs[0].normalized = GL_FALSE;
-        attribs[0].stride = 2 * sizeof(GLfloat);
-        attribs[0].offset = 0;
-
-        attribs[1].data = color;
         attribs[1].index = glGetAttribLocation(shader_program, color_name);
-        attribs[1].size = 3;
-        attribs[1].type = GL_FLOAT;
-        attribs[1].normalized = GL_FALSE;
-        attribs[1].stride = 3 * sizeof(GLfloat);
-        attribs[1].offset = 2;
-    }
-
-    ~Vertex2_Position_Color()
-    {
-        delete[] attribs;
     }
 };
 
@@ -139,30 +114,12 @@ struct Vertex2_Position_Texcoord : public Vertex
     }
 
     Vertex2_Position_Texcoord(GLfloat position[2], GLfloat texcoord[2],
-        GLuint shader_program, const char* position_name = "vs_position", const char* texcoord_name = "vs_texcoord")
+                              GLuint shader_program, 
+                              const char* position_name = "vs_position", 
+                              const char* texcoord_name = "vs_texcoord") : Vertex2_Position_Texcoord(position, texcoord)
     {
-        attribs = new Vertex_Attrib[2];
-
-        attribs[0].data = position;
         attribs[0].index = glGetAttribLocation(shader_program, position_name);
-        attribs[0].size = 2;
-        attribs[0].type = GL_FLOAT;
-        attribs[0].normalized = GL_FALSE;
-        attribs[0].stride = 2 * sizeof(GLfloat);
-        attribs[0].offset = 0;
-
-        attribs[1].data = texcoord;
         attribs[1].index = glGetAttribLocation(shader_program, texcoord_name);
-        attribs[1].size = 2;
-        attribs[1].type = GL_FLOAT;
-        attribs[1].normalized = GL_FALSE;
-        attribs[1].stride = 2 * sizeof(GLfloat);
-        attribs[1].offset = 2;
-    }
-
-    ~Vertex2_Position_Texcoord()
-    {
-        delete[] attribs;
     }
 };
 
@@ -199,38 +156,14 @@ struct Vertex2_Position_Texcoord_Color : public Vertex
     }
     
     Vertex2_Position_Texcoord_Color(GLfloat position[2], GLfloat texcoord[2], GLfloat color[3], 
-        GLuint shader_program, const char* position_name = "vs_position", const char* texcoord_name = "vs_texcoord", const char* color_name = "vs_color")
+                                    GLuint shader_program, 
+                                    const char* position_name = "vs_position", 
+                                    const char* texcoord_name = "vs_texcoord", 
+                                    const char* color_name = "vs_color") : Vertex2_Position_Texcoord_Color(position, texcoord, color)
     {
-        attribs = new Vertex_Attrib[3];
-
-        attribs[0].data = position;
         attribs[0].index = glGetAttribLocation(shader_program, position_name);
-        attribs[0].size = 2;
-        attribs[0].type = GL_FLOAT;
-        attribs[0].normalized = GL_FALSE;
-        attribs[0].stride = 2 * sizeof(GLfloat);
-        attribs[0].offset = 0;
-
-        attribs[1].data = texcoord;
         attribs[1].index = glGetAttribLocation(shader_program, texcoord_name);
-        attribs[1].size = 2;
-        attribs[1].type = GL_FLOAT;
-        attribs[1].normalized = GL_FALSE;
-        attribs[1].stride = 2 * sizeof(GLfloat);
-        attribs[1].offset = 2;
-
-        attribs[2].data = color;
         attribs[2].index = glGetAttribLocation(shader_program, color_name);
-        attribs[2].size = 3;
-        attribs[2].type = GL_FLOAT;
-        attribs[2].normalized = GL_FALSE;
-        attribs[2].stride = 3 * sizeof(GLfloat);
-        attribs[2].offset = 4;
-    }
-
-    ~Vertex2_Position_Texcoord_Color()
-    {
-        delete[] attribs;
     }
 };
 
@@ -238,7 +171,7 @@ struct Vertex2_Position_Texcoord_Color : public Vertex
 struct Vertex_Position : public Vertex
 {
     Vertex_Position(GLfloat position[3], 
-                     GLuint position_index = 0)
+                    GLuint position_index = 0)
     {
         attribs = new Vertex_Attrib[1];
 
@@ -252,30 +185,18 @@ struct Vertex_Position : public Vertex
         attribs[0].offset = 0;
     }
 
-    Vertex_Position(GLfloat position[2], GLuint shader_program, const char* position_name = "vs_position")
+    Vertex_Position(GLfloat position[2], 
+                    GLuint shader_program, 
+                    const char* position_name = "vs_position") : Vertex_Position(position)
     {
-        attribs = new Vertex_Attrib[1];
-
-        // position
-        attribs[0].data = position;
         attribs[0].index = glGetAttribLocation(shader_program, position_name);
-        attribs[0].size = 3;
-        attribs[0].type = GL_FLOAT;
-        attribs[0].normalized = GL_FALSE;
-        attribs[0].stride = 3 * sizeof(GLfloat);
-        attribs[0].offset = 0;
-    }
-
-    ~Vertex_Position()
-    {
-        delete[] attribs;
     }
 };
 
 struct Vertex_Position_Color : public Vertex
 {
     Vertex_Position_Color(GLfloat position[3], GLfloat color[3], 
-                           GLuint position_index = 0, GLuint color_index = 1)
+                          GLuint position_index = 0, GLuint color_index = 1)
     {
         attribs = new Vertex_Attrib[2];
 
@@ -297,37 +218,19 @@ struct Vertex_Position_Color : public Vertex
     }
 
     Vertex_Position_Color(GLfloat position[3], GLfloat color[3], 
-        GLuint shader_program, const char* position_name = "vs_position", const char* color_name = "vs_color")
+                          GLuint shader_program, 
+                          const char* position_name = "vs_position", 
+                          const char* color_name = "vs_color") : Vertex_Position_Color(position, color)
     {
-        attribs = new Vertex_Attrib[2];
-
-        attribs[0].data = position;
         attribs[0].index = glGetAttribLocation(shader_program, position_name);
-        attribs[0].size = 3;
-        attribs[0].type = GL_FLOAT;
-        attribs[0].normalized = GL_FALSE;
-        attribs[0].stride = 3 * sizeof(GLfloat);
-        attribs[0].offset = 0;
-
-        attribs[1].data = color;
         attribs[1].index = glGetAttribLocation(shader_program, color_name);
-        attribs[1].size = 3;
-        attribs[1].type = GL_FLOAT;
-        attribs[1].normalized = GL_FALSE;
-        attribs[1].stride = 3 * sizeof(GLfloat);
-        attribs[1].offset = 3;
-    }
-
-    ~Vertex_Position_Color()
-    {
-        delete[] attribs;
     }
 };
 
 struct Vertex_Position_Texcoord : public Vertex
 {
     Vertex_Position_Texcoord(GLfloat position[3], GLfloat texcoord[2], 
-                              GLuint position_index = 0, GLuint texcoord_index = 1)
+                             GLuint position_index = 0, GLuint texcoord_index = 1)
     {
         attribs = new Vertex_Attrib[2];
 
@@ -349,30 +252,12 @@ struct Vertex_Position_Texcoord : public Vertex
     }
 
     Vertex_Position_Texcoord(GLfloat position[3], GLfloat texcoord[2],
-        GLuint shader_program, const char* position_name = "vs_position", const char* texcoord_name = "vs_texcoord")
+                             GLuint shader_program, 
+                             const char* position_name = "vs_position", 
+                             const char* texcoord_name = "vs_texcoord") : Vertex_Position_Texcoord(position, texcoord)
     {
-        attribs = new Vertex_Attrib[2];
-
-        attribs[0].data = position;
         attribs[0].index = glGetAttribLocation(shader_program, position_name);
-        attribs[0].size = 3;
-        attribs[0].type = GL_FLOAT;
-        attribs[0].normalized = GL_FALSE;
-        attribs[0].stride = 3 * sizeof(GLfloat);
-        attribs[0].offset = 0;
-
-        attribs[1].data = texcoord;
         attribs[1].index = glGetAttribLocation(shader_program, texcoord_name);
-        attribs[1].size = 2;
-        attribs[1].type = GL_FLOAT;
-        attribs[1].normalized = GL_FALSE;
-        attribs[1].stride = 2 * sizeof(GLfloat);
-        attribs[1].offset = 3;
-    }
-
-    ~Vertex_Position_Texcoord()
-    {
-        delete[] attribs;
     }
 };
 
@@ -401,37 +286,19 @@ struct Vertex_Position_Normal : public Vertex
     }
 
     Vertex_Position_Normal(GLfloat position[3], GLfloat normal[3], 
-        GLuint shader_program, const char* position_name = "vs_position", const char* normal_name = "vs_normal")
+                           GLuint shader_program, 
+                           const char* position_name = "vs_position", 
+                           const char* normal_name = "vs_normal") : Vertex_Position_Normal(position, normal)
     {
-        attribs = new Vertex_Attrib[2];
-
-        attribs[0].data = position;
         attribs[0].index = glGetAttribLocation(shader_program, position_name);
-        attribs[0].size = 3;
-        attribs[0].type = GL_FLOAT;
-        attribs[0].normalized = GL_FALSE;
-        attribs[0].stride = 3 * sizeof(GLfloat);
-        attribs[0].offset = 0;
-
-        attribs[1].data = normal;
         attribs[1].index = glGetAttribLocation(shader_program, normal_name);
-        attribs[1].size = 3;
-        attribs[1].type = GL_FLOAT;
-        attribs[1].normalized = GL_FALSE;
-        attribs[1].stride = 3 * sizeof(GLfloat);
-        attribs[1].offset = 3;
-    }
-
-    ~Vertex_Position_Normal()
-    {
-        delete[] attribs;
     }
 };
 
 struct Vertex_Position_Normal_Texcoord : public Vertex
 {
     Vertex_Position_Normal_Texcoord(GLfloat position[3], GLfloat normal[3], GLfloat texcoord[2] ,
-                           GLuint position_index = 0, GLuint normal_index = 1, GLuint texcoord_index = 2)
+                                    GLuint position_index = 0, GLuint normal_index = 1, GLuint texcoord_index = 2)
     {
         attribs = new Vertex_Attrib[3];
 
@@ -461,37 +328,13 @@ struct Vertex_Position_Normal_Texcoord : public Vertex
     }
 
     Vertex_Position_Normal_Texcoord(GLfloat position[3], GLfloat normal[3], GLfloat texcoord[2],
-        GLuint shader_program, const char* position_name = "vs_position", const char* normal_name = "vs_normal", const char* texcoord_name = "vs_texcoord")
+                                    GLuint shader_program, 
+                                    const char* position_name = "vs_position", 
+                                    const char* normal_name = "vs_normal", 
+                                    const char* texcoord_name = "vs_texcoord") : Vertex_Position_Normal_Texcoord(position, normal, texcoord)
     {
-        attribs = new Vertex_Attrib[3];
-
-        attribs[0].data = position;
         attribs[0].index = glGetAttribLocation(shader_program, position_name);
-        attribs[0].size = 3;
-        attribs[0].type = GL_FLOAT;
-        attribs[0].normalized = GL_FALSE;
-        attribs[0].stride = 3 * sizeof(GLfloat);
-        attribs[0].offset = 0;
-
-        attribs[1].data = normal;
-        attribs[0].index = glGetAttribLocation(shader_program, normal_name);
-        attribs[1].size = 3;
-        attribs[1].type = GL_FLOAT;
-        attribs[1].normalized = GL_FALSE;
-        attribs[1].stride = 3 * sizeof(GLfloat);
-        attribs[1].offset = 3;
-
-        attribs[2].data = texcoord;
-        attribs[0].index = glGetAttribLocation(shader_program, texcoord_name);
-        attribs[2].size = 2;
-        attribs[2].type = GL_FLOAT;
-        attribs[2].normalized = GL_FALSE;
-        attribs[2].stride = 2 * sizeof(GLfloat);
-        attribs[2].offset = 6;
-    }
-
-    ~Vertex_Position_Normal_Texcoord()
-    {
-        delete[] attribs;
+        attribs[1].index = glGetAttribLocation(shader_program, normal_name);
+        attribs[2].index = glGetAttribLocation(shader_program, texcoord_name);
     }
 };
