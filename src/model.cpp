@@ -1,7 +1,7 @@
 #include "model.hpp"
 
-Model::Model(std::vector<GLfloat> vertices, int index_count, GLuint shader_program, GLenum mode, GLenum type) :
-    topology(mode), index_count(index_count), index_type(type)
+Model::Model(std::vector<GLfloat> vertices, int index_count, GLuint shader_program, GLenum mode, GLenum type)
+: topology(mode), index_count(index_count), index_type(type)
 {
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
@@ -17,8 +17,8 @@ Model::Model(std::vector<GLfloat> vertices, int index_count, GLuint shader_progr
     glBindVertexArray(0);
 }
 
-Model::Model(std::vector<GLfloat> vertices, std::vector<GLuint> indices, GLuint shader_program, GLenum mode, GLenum type) :
-    topology(mode), index_count(indices.size()), index_type(type)
+Model::Model(std::vector<GLfloat> vertices, std::vector<GLuint> indices, GLuint shader_program, GLenum mode, GLenum type)
+: topology(mode), index_count(indices.size()), index_type(type)
 {
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
