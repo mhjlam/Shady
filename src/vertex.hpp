@@ -44,6 +44,23 @@ struct Vertex
     GLint attribs_size = 0;
     Vertex_Attrib* attribs = nullptr;
 
+    static bool concatenate(const std::vector<Vertex>& vertices, std::vector<GLfloat>& data)
+    {
+        if (vertices.size() < 2) return false;
+        if (data.size() != 0) return false;
+
+        Vertex_Type type = vertices.front().type;
+        if (type == VERTEX_TYPE_UNDEFINED) return false;
+
+        for (const Vertex& vertex : vertices)
+        {
+            if (vertex.type != type) return false; // all vertex types must correspond
+            data.insert(data.end(), vertex.data, vertex.data + vertex.data_size - 1);
+        }
+
+        return true;
+    }
+
     virtual ~Vertex()
     {
         delete[] data;
