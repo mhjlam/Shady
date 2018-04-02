@@ -8,6 +8,22 @@
 
 class Shader;
 
+enum Vertex_Type
+{
+    VERTEX_TYPE_UNDEFINED,
+
+    VERTEX_TYPE_POSITION_2D,
+    VERTEX_TYPE_POSITION_COLOR_2D,
+    VERTEX_TYPE_POSITION_TEXCOORD_2D,
+    VERTEX_TYPE_POSITION_TEXCOORD_COLOR_2D,
+
+    VERTEX_TYPE_POSITION,
+    VERTEX_TYPE_POSITION_COLOR,
+    VERTEX_TYPE_POSITION_TEXCOORD,
+    VERTEX_TYPE_POSITION_NORMAL,
+    VERTEX_TYPE_POSITION_NORMAL_TEXCOORD
+};
+
 struct Vertex_Attrib
 {
     GLuint index;
@@ -20,6 +36,8 @@ struct Vertex_Attrib
 
 struct Vertex
 {
+    Vertex_Type type = VERTEX_TYPE_UNDEFINED;
+
     GLint data_size = 0;
     GLfloat* data = nullptr;
 
@@ -39,6 +57,8 @@ struct Vertex2_Position : public Vertex
     Vertex2_Position(GLfloat position[2], 
                      GLuint position_index = 0)
     {
+        type = VERTEX_TYPE_POSITION_2D;
+
         data_size = 2;
         data = new GLfloat[data_size];
         std::copy(position, position + 2, data);
@@ -68,6 +88,8 @@ struct Vertex2_Position_Color : public Vertex
     Vertex2_Position_Color(GLfloat position[2], GLfloat color[3], 
                            GLuint position_index = 0, GLuint color_index = 1)
     {
+        type = VERTEX_TYPE_POSITION_COLOR_2D;
+        
         data_size = 5;
         data = new GLfloat[data_size];
         std::copy(position, position + 2, data);
@@ -106,6 +128,8 @@ struct Vertex2_Position_Texcoord : public Vertex
     Vertex2_Position_Texcoord(GLfloat position[2], GLfloat texcoord[2], 
                               GLuint position_index = 0, GLuint texcoord_index = 1)
     {
+        type = VERTEX_TYPE_POSITION_TEXCOORD_2D;
+
         data_size = 4;
         data = new GLfloat[data_size];
         std::copy(position, position + 2, data);
@@ -144,6 +168,8 @@ struct Vertex2_Position_Texcoord_Color : public Vertex
     Vertex2_Position_Texcoord_Color(GLfloat position[2], GLfloat texcoord[2], GLfloat color[3], 
                                     GLuint position_index = 0, GLuint texcoord_index = 1, GLuint color_index = 2)
     {
+        type = VERTEX_TYPE_POSITION_TEXCOORD_COLOR_2D;
+
         data_size = 7;
         data = new GLfloat[data_size];
         std::copy(position, position + 2, data);
@@ -193,6 +219,8 @@ struct Vertex_Position : public Vertex
     Vertex_Position(GLfloat position[3], 
                     GLuint position_index = 0)
     {
+        type = VERTEX_TYPE_POSITION;
+
         data_size = 3;
         data = new GLfloat[data_size];
         std::copy(position, position + 3, data);
@@ -222,6 +250,8 @@ struct Vertex_Position_Color : public Vertex
     Vertex_Position_Color(GLfloat position[3], GLfloat color[3], 
                           GLuint position_index = 0, GLuint color_index = 1)
     {
+        type = VERTEX_TYPE_POSITION_COLOR;
+
         data_size = 6;
         data = new GLfloat[data_size];
         std::copy(position, position + 3, data);
@@ -260,6 +290,8 @@ struct Vertex_Position_Texcoord : public Vertex
     Vertex_Position_Texcoord(GLfloat position[3], GLfloat texcoord[2], 
                              GLuint position_index = 0, GLuint texcoord_index = 1)
     {
+        type = VERTEX_TYPE_POSITION_TEXCOORD;
+
         data_size = 5;
         data = new GLfloat[data_size];
         std::copy(position, position + 3, data);
@@ -298,6 +330,8 @@ struct Vertex_Position_Normal : public Vertex
     Vertex_Position_Normal(GLfloat position[3], GLfloat normal[3], 
                            GLuint position_index = 0, GLuint normal_index = 1)
     {
+        type = VERTEX_TYPE_POSITION_NORMAL;
+
         data_size = 6;
         data = new GLfloat[data_size];
         std::copy(position, position + 3, data);
@@ -336,6 +370,8 @@ struct Vertex_Position_Normal_Texcoord : public Vertex
     Vertex_Position_Normal_Texcoord(GLfloat position[3], GLfloat normal[3], GLfloat texcoord[2] ,
                                     GLuint position_index = 0, GLuint normal_index = 1, GLuint texcoord_index = 2)
     {
+        type = VERTEX_TYPE_POSITION_NORMAL_TEXCOORD;
+
         data_size = 8;
         data = new GLfloat[data_size];
         std::copy(position, position + 3, data);
