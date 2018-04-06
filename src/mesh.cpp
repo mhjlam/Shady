@@ -1,27 +1,69 @@
 #include "mesh.hpp"
 
-#define TINYOBJLOADER_IMPLEMENTATION
-#include "tiny_obj_loader.h"
-
 #include <fstream>
 #include <experimental/filesystem>
 
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
+
 namespace fs = std::experimental::filesystem;
 
-Mesh::Mesh()
+Mesh::Mesh(const std::vector<Vertex>& vertices, GLenum mode, GLenum usage)
+: vertices(vertices), indices(std::vector<GLuint>()), topology(mode), vertex_usage(usage)
 {
-	vertices = std::vector<Vertex>();
-	indices = std::vector<GLuint>();
+	// assemble vertex data
+	std::vector<GLfloat> data = Vertex::assemble(vertices);
+
+	// generate vertex array object
+	glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+	// create vertex buffer
+    GLuint vertex_buffer;
+    glGenBuffers(1, &vertex_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+    glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(GLfloat), &data.front(), vertex_usage);
+
+	// configure vertex attributes
+	for (Vertex_Attrib attrib : vertices.front().attribs)
+	{
+		glEnableVertexAttribArray(attrib.index);
+    	glVertexAttribPointer(attrib.index, attrib.size, attrib.type, attrib.normalized, attrib.stride, (void*)(attrib.offset * sizeof(GLfloat)));
+	}
+
+    glBindVertexArray(0);
 }
 
-Mesh::Mesh(const std::vector<Vertex>& vertices, GLenum mode, GLenum type)
+Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, GLenum mode, GLenum usage)
+: vertices(vertices), indices(indices), topology(mode), vertex_usage(usage)
 {
+	// assemble vertex data
+	std::vector<GLfloat> data = Vertex::assemble(vertices);
 
-}
+	// generate vertex array object
+	glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
 
-Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, GLenum mode, GLenum type)
-{
+	// create vertex buffer
+    GLuint vertex_buffer;
+    glGenBuffers(1, &vertex_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+    glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(GLfloat), &data.front(), vertex_usage);
 
+	// create index buffer
+    GLuint index_buffer;
+    glGenBuffers(1, &index_buffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices.front(), GL_STATIC_DRAW);
+
+	// configure vertex attributes
+	for (Vertex_Attrib attrib : vertices.front().attribs)
+	{
+		glEnableVertexAttribArray(attrib.index);
+    	glVertexAttribPointer(attrib.index, attrib.size, attrib.type, attrib.normalized, attrib.stride, (void*)(attrib.offset * sizeof(GLfloat)));
+	}
+
+    glBindVertexArray(0);	
 }
 
 std::shared_ptr<Mesh> load_obj(const std::string& obj_file_path)

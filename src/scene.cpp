@@ -9,8 +9,10 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "mesh.hpp"
 #include "model.hpp"
 #include "shader.hpp"
+#include "vertex.hpp"
 #include "renderer.hpp"
 
 Scene_Random_Color::Scene_Random_Color() : Scene()
@@ -44,21 +46,22 @@ void Scene_Random_Color::render()
 
 Scene_Cursor_Color::Scene_Cursor_Color() : Scene()
 {
-    std::vector<GLfloat> vertices =
-    {
-        // top-left position
-        -1.0f,  1.0f, 0.0f, 1.0f,
-         1.0f,  1.0f, 0.0f, 1.0f,
-        -1.0f, -1.0f, 0.0f, 1.0f,
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-        // bottom-right position
-         1.0f,  1.0f, 0.0f, 1.0f,
-         1.0f, -1.0f, 0.0f, 1.0f,
-        -1.0f, -1.0f, 0.0f, 1.0f
+    std::vector<Vertex> vertices =
+    {
+        Vertex_Position2({-1.0f,  1.0f}),
+        Vertex_Position2({ 1.0f,  1.0f}),
+        Vertex_Position2({-1.0f, -1.0f}),
+
+        Vertex_Position2({ 1.0f,  1.0f}),
+        Vertex_Position2({ 1.0f, -1.0f}),
+        Vertex_Position2({-1.0f, -1.0f})
     };
 
+    mesh = std::make_shared<Mesh>(vertices, GL_TRIANGLES, GL_STATIC_DRAW);
     shader = std::make_shared<Shader>("shaders/scene_cursor_color.vs.glsl", "shaders/scene_cursor_color.fs.glsl");
-    model = std::make_shared<Model>(vertices, vertices.size() / 4, *shader);
+    model = std::make_shared<Model>(mesh, shader);
 
     uniloc_mouse = glGetUniformLocation(*shader, "mouse");
     uniloc_resolution = glGetUniformLocation(*shader, "resolution");
@@ -92,13 +95,12 @@ Scene_Quadrilateral::Scene_Quadrilateral() : Scene()
 {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-    std::vector<GLfloat> vertices =
+    std::vector<Vertex> vertices =
     {
-        //position    //color           //texcoord
-        -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // top-left
-         0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // top-right
-         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // bottom-right
-        -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f  // Bottom-left
+        Vertex_Position2_Texcoord_Color({-0.5f,  0.5f}, {0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}),
+        Vertex_Position2_Texcoord_Color({ 0.5f,  0.5f}, {1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}),
+        Vertex_Position2_Texcoord_Color({ 0.5f, -0.5f}, {1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}),
+        Vertex_Position2_Texcoord_Color({-0.5f, -0.5f}, {0.0f, 1.0f}, {1.0f, 1.0f, 1.0f})
     };
 
     std::vector<GLuint> indices =
@@ -107,8 +109,9 @@ Scene_Quadrilateral::Scene_Quadrilateral() : Scene()
         2, 3, 0
     };
 
+    mesh = std::make_shared<Mesh>(vertices, indices, GL_TRIANGLES, GL_STATIC_DRAW);
     shader = std::make_shared<Shader>("shaders/scene_quadrilateral.vs.glsl", "shaders/scene_quadrilateral.fs.glsl");
-    model = std::make_shared<Model>(vertices, indices, *shader);
+    model = std::make_shared<Model>(mesh, shader);
 
     uniloc_model = glGetUniformLocation(*shader, "model");
     uniloc_view = glGetUniformLocation(*shader, "view");

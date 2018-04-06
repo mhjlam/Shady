@@ -5,6 +5,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+class Mesh;
 class Model;
 class Shader;
 class Renderer;
@@ -45,7 +46,8 @@ private:
 
     GLint uniloc_mouse;
     GLint uniloc_resolution;
-
+    
+    std::shared_ptr<Mesh> mesh;
     std::shared_ptr<Model> model;
     std::shared_ptr<Shader> shader;
 
@@ -65,6 +67,7 @@ private:
     GLint uniloc_view;
     GLint uniloc_projection;
 
+    std::shared_ptr<Mesh> mesh;
     std::shared_ptr<Model> model;
     std::shared_ptr<Shader> shader;
 
