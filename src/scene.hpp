@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include <glm/glm.hpp>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -62,6 +64,10 @@ class Scene_Quadrilateral : public Scene
 private:
     float scale, angle;
     float aspect_ratio;
+
+    glm::mat4 mat_model;
+    glm::mat4 mat_view;
+    glm::mat4 mat_projection;
 
     GLint uniloc_model;
     GLint uniloc_view;

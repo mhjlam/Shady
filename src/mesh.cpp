@@ -1,8 +1,10 @@
 #include "mesh.hpp"
 
 #include <fstream>
+#include <exception>
 #include <experimental/filesystem>
 
+#include <fmt/format.h>
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
@@ -68,24 +70,48 @@ Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indic
 
 std::shared_ptr<Mesh> load_obj(const std::string& obj_file_path)
 {
-	if (!fs::exists(obj_file_path)) return nullptr;
+	if (!fs::exists(obj_file_path))
+	{
+		throw std::runtime_error(fmt::format("Failed to load mesh file \"obj_file_path\"; path does not exist"));
+	}
 
 	std::ifstream file(obj_file_path, std::ios::in);
-	if (!file.is_open()) return nullptr;
+	if (!file.is_open())
+	{
+		throw std::runtime_error(fmt::format("Failed to read mesh file \"obj_file_path\"; permission denied or file is corrupt"));
+	}
+
+
 }
 
 std::shared_ptr<Mesh> load_fbx(const std::string& fbx_file_path)
 {
-	if (!fs::exists(fbx_file_path)) return nullptr;
+	if (!fs::exists(fbx_file_path))
+	{
+		throw std::runtime_error(fmt::format("Failed to load mesh file \"obj_file_path\"; path does not exist"));
+	}
 
 	std::ifstream file(fbx_file_path, std::ios::in);
-	if (!file.is_open()) return nullptr;
+	if (!file.is_open())
+	{
+		throw std::runtime_error(fmt::format("Failed to read mesh file \"obj_file_path\"; permission denied or file is corrupt"));
+	}
+
+
 }
 
 std::shared_ptr<Mesh> load_gltf(const std::string& gltf_file_path)
 {
-	if (!fs::exists(gltf_file_path)) return nullptr;
+	if (!fs::exists(gltf_file_path))
+	{
+		throw std::runtime_error(fmt::format("Failed to load mesh file \"obj_file_path\"; path does not exist"));
+	}
 
 	std::ifstream file(gltf_file_path, std::ios::in);
-	if (!file.is_open()) return nullptr;
+	if (!file.is_open())
+	{
+		throw std::runtime_error(fmt::format("Failed to read mesh file \"obj_file_path\"; permission denied or file is corrupt"));
+	}
+
+	
 }

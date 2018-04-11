@@ -5,9 +5,9 @@
 #include <vector>
 #include <iostream>
 
-#include "glm/glm.hpp"
-#include "glm/gtc/type_ptr.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "mesh.hpp"
 #include "model.hpp"
@@ -85,9 +85,6 @@ void Scene_Cursor_Color::render()
     glUniform2f(uniloc_resolution, float(width), float(height));
 
     glDrawArrays(model->topology, 0, model->index_count);
-
-    glBindVertexArray(0);
-    glUseProgram(0);
 }
 
 
@@ -123,6 +120,10 @@ void Scene_Quadrilateral::update(Renderer* renderer)
     scale += renderer->time_delta() * 0.2f;
     angle += renderer->time_delta() * 0.5f * glm::radians(180.0f);
     aspect_ratio = renderer->aspect_ratio();
+
+    mat_model = glm::scale(glm::rotate(glm::mat4(1.0f), -angle, glm::vec3(0.0f, 0.0f, 1.0f)), glm::vec3(scale));
+    mat_view = glm::lookAt(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    mat_projection = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 10.0f);
 }
 
 void Scene_Quadrilateral::render()
@@ -132,19 +133,12 @@ void Scene_Quadrilateral::render()
     glUseProgram(*shader);
     glBindVertexArray(*model);
 
-    glm::mat4 mat_model = glm::scale(glm::rotate(glm::mat4(1.0f), -angle, glm::vec3(0.0f, 0.0f, 1.0f)), glm::vec3(scale));
+    // update matrices
     glUniformMatrix4fv(uniloc_model, 1, GL_FALSE, glm::value_ptr(mat_model));
-
-    glm::mat4 mat_view = glm::lookAt(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     glUniformMatrix4fv(uniloc_view, 1, GL_FALSE, glm::value_ptr(mat_view));
-
-    glm::mat4 mat_projection = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 10.0f);
     glUniformMatrix4fv(uniloc_projection, 1, GL_FALSE, glm::value_ptr(mat_projection));
 
     glDrawElements(model->topology, model->index_count, model->index_type, 0);
-
-    glBindVertexArray(0);
-    glUseProgram(0);
 }
 
 void Scene_Quadrilateral::reset()
